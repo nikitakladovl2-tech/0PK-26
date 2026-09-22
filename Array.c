@@ -4,11 +4,11 @@
 #include <stdlib.h>
 
 
-float min(float numbers[1000], int i, float epsilon){
+float min(float numbers[1000], int i){
     float cur;
     
     cur = numbers[0];
-    for (int j = 1; j<= i; j++){
+    for (int j = 1; j< i; j++){
         
         if ( cur - numbers[j] > 0){
             cur = numbers[j];
@@ -17,11 +17,11 @@ float min(float numbers[1000], int i, float epsilon){
     return cur;
 }
 
-float max(float numbers[1000], int i, float epsilon){
+float max(float numbers[1000], int i){
     float cur;
     
     cur = numbers[0];
-    for (int j = 1; j<= i; j++){
+    for (int j = 1; j< i; j++){
         
         if ( cur - numbers[j] < 0){
             cur = numbers[j];
@@ -32,7 +32,7 @@ float max(float numbers[1000], int i, float epsilon){
 
 float average(float numbers[], int i){
     float sum = 0;
-    for (int j=0; j<=i; j++){
+    for (int j=0; j< i; j++){
         sum += numbers[j];
     }
     return sum/i;
@@ -42,7 +42,7 @@ float average(float numbers[], int i){
 float rms(float numbers[], int i){
     float sum = 0, aver;
     aver = average(numbers, i);
-    for (int j=0; j<=i; j++){
+    for (int j=0; j< i; j++){
         sum += pow((numbers[j] - aver), 2);
     }
     return sqrtf(sum/i);
@@ -52,7 +52,7 @@ int count_same_elemf(float numbers[], int i, float epsilon){
     int cur = 1;
     int max_cur = 1;
 
-    for (int j=0; j<i-1; j++){
+    for (int j=0; j< i-1; j++){
         if (fabsf(numbers[j] - numbers[j + 1]) < epsilon){
             cur += 1;
         }
@@ -87,12 +87,12 @@ int compare(const void* a, const void*b, float epsilon){
 
 
 int monoton(float numbers[], int i, float epsilon){
-    if (i < 2){return 0;}
+    if (i < 1){return 0;}
+    else if (i == 1) { return 1;}
     int cur_plus = 1, cur_min = 1;
     int max_cur = -1;
 
-    // num[j] это первый элемент (for delete)
-    for (int j=0; j<i-1; j++){
+    for (int j=0; j< i-1; j++){
         if (compare(&numbers[j], &numbers[j+1], epsilon) == 0){
             cur_plus++;
             cur_min++;
@@ -153,17 +153,19 @@ int compare_sort(const void* a, const void* b){
 }
 
 
-
 float median(float numbers[], int i){
     float median;
-    qsort(numbers, i, sizeof(float), compare_sort);
+    float copy[i];
+    for (int j = 0; j < i; j++) {
+    copy[j] = numbers[j];
+    }
+    qsort(copy, i, sizeof(float), compare_sort);
 
     if (i % 2 == 0){
-        median = (numbers[i/2 - 1] + numbers[i/2])/2;
+        median = (copy[i/2 - 1] + copy[i/2])/2;
     }
-
     else {
-        median = numbers[i / 2];
+        median = copy[i / 2];
     }
     return median;
 }
@@ -186,20 +188,21 @@ int main(void)
             true_input = 0;
         }
     }
-    //массив наполнен, i это число элементов в массиве
-/*    printf("i = %d\n", i);
-  printf("min = %f\n", min(numbers, i, epsilon));
-    printf("max = %f\n", max(numbers, i, epsilon));
+    //i это число элементов в массиве
+/*
+    printf("i = %d\n", i);
+    printf("min = %f\n", min(numbers, i));
+    printf("max = %f\n", max(numbers, i));
     printf("aver = %f\n", average(numbers, i));
     printf("rms = %f\n", rms(numbers, i)); 
-    printf("rms = %f\n", rms(numbers, i));
     printf("same = %d\n", count_same_elemf(numbers, i, epsilon));
     printf("monoton = %d\n", monoton(numbers, i, epsilon));
-    */
-   printf("median = %f\n", median(numbers, i));
+    printf("median = %f\n", median(numbers, i));
+
+*/
+
     return 0;
 }
-
 
 
 
